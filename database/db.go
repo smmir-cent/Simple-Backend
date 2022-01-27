@@ -101,3 +101,21 @@ func (db *DataBase) GetMovie(id int) Movie {
 
 	return movie
 }
+
+func (db *DataBase) InsertVote(v Vote) error {
+	sqlStatement := "INSERT INTO vote (userId, movieId, rating) VALUES (?, ?, ?)"
+	_, err := db.Connection.Exec(sqlStatement, v.UserId, v.MovieId, v.Rating)
+	if err != nil {
+		log.Println(err)
+	}
+	return err
+}
+
+func (db *DataBase) InsertComment(c Comment) error {
+	sqlStatement := "INSERT INTO comment (userId,  movieId, comment , createdAt) VALUES (?, ?, ? , ?)"
+	_, err := db.Connection.Exec(sqlStatement, c.UserId, c.MovieId, c.Comment, c.CreatedAt)
+	if err != nil {
+		log.Println(err)
+	}
+	return err
+}

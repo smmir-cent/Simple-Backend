@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/smmir-cent/Simple-Backend/database"
@@ -33,6 +34,16 @@ type MovieOutput struct {
 
 type MoviesList struct {
 	Movies []*MovieOutput `json:"movies"`
+}
+
+type MovieVote struct {
+	Movie_id int `json:"movie_id"`
+	Vote     int `json:"vote"`
+}
+
+type MovieComment struct {
+	Movie_id     int    `json:"movie_id"`
+	Comment_body string `json:"comment_body"`
 }
 
 func (public Public) GetComment(c echo.Context) error {
@@ -84,5 +95,34 @@ func (public Public) GetMovie(c echo.Context) error {
 		}
 	}
 	return c.NoContent(http.StatusNoContent)
+
+}
+
+func (public Public) MovieVote(c echo.Context) error {
+	var Vote MovieVote
+	if err := c.Bind(&Vote); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	} else {
+		err := public.DB.InsertVote(database.Vote{UserId: 1, MovieId: Vote.Movie_id, Rating: float64(Vote.Vote)})
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		} else {
+			return c.NoContent(http.StatusNoContent)
+		}
+	}
+}
+
+func (public Public) CommentSubmit(c echo.Context) error {
+	var Comment MovieComment
+	if err := c.Bind(&Comment); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	} else {
+		err := public.DB.InsertComment(database.Comment{UserId: 1, MovieId: Comment.Movie_id, Comment: Comment.Comment_body, CreatedAt: time.Now().String()})
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		} else {
+			return c.NoContent(http.StatusNoContent)
+		}
+	}
 
 }

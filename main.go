@@ -26,6 +26,8 @@ func main() {
 	// }
 	// db.InsertMovie(movie)
 	// user
+	e.POST("/user/vote", public.MovieVote)
+	e.POST("/user/comment", public.CommentSubmit)
 	if err := e.Start("0.0.0.0:8080"); err != nil {
 		log.Fatal(err)
 	}
@@ -34,7 +36,7 @@ func main() {
 /*
 
 CREATE TABLE movie ( id integer, name varchar(32) , description varchar(32) , rating double );
-CREATE TABLE vote ( id integer, userId integer , movieId integer , rating double );
-CREATE TABLE comment ( id integer, userId integer , movieId integer, comment varchar(256) , createdAt varchar(256) );
+CREATE TABLE vote ( id integer NOT NULL AUTO_INCREMENT, userId integer , movieId integer , rating double,PRIMARY KEY (id) );
+CREATE TABLE comment ( id integer NOT NULL AUTO_INCREMENT, userId integer , movieId integer, comment varchar(256) ,approved BOOLEAN DEFAULT false, createdAt varchar(256),PRIMARY KEY (id)  );
 CREATE TABLE user ( id integer, role integer , username varchar(256) , password varchar(256) );
 */

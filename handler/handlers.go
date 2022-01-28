@@ -55,6 +55,7 @@ type Approval struct {
 }
 
 func (public Public) GetComment(c echo.Context) error {
+	log.Println("get comments")
 
 	if value := c.QueryParam("movie"); value != "" {
 		intVar, err := strconv.Atoi(value)
@@ -74,6 +75,8 @@ func (public Public) GetComment(c echo.Context) error {
 }
 
 func (public Public) GetMovies(c echo.Context) error {
+	log.Println("get movies")
+
 	movies := public.DB.GetMovies()
 	var MovieOutputs []*MovieOutput
 	for _, element := range movies {
@@ -84,7 +87,8 @@ func (public Public) GetMovies(c echo.Context) error {
 }
 
 func (public Public) GetMovie(c echo.Context) error {
-	// log.Println("GET MOVIE")
+	log.Println("get movie")
+
 	if value := c.Param("id"); value != "" {
 		// log.Println(value)
 		intVar, err := strconv.Atoi(value)
@@ -107,6 +111,8 @@ func (public Public) GetMovie(c echo.Context) error {
 }
 
 func (public Public) MovieVote(c echo.Context) error {
+	log.Println("set movie's vote")
+
 	var Vote MovieVote
 	if err := c.Bind(&Vote); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -121,6 +127,8 @@ func (public Public) MovieVote(c echo.Context) error {
 }
 
 func (public Public) CommentSubmit(c echo.Context) error {
+	log.Println("submit comment")
+
 	var Comment MovieComment
 	if err := c.Bind(&Comment); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -135,6 +143,8 @@ func (public Public) CommentSubmit(c echo.Context) error {
 }
 
 func (public Public) InsertMovie(c echo.Context) error {
+	log.Println("insert movie")
+
 	var movieInput MovieInput
 	if err := c.Bind(&movieInput); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -149,6 +159,8 @@ func (public Public) InsertMovie(c echo.Context) error {
 }
 
 func (public Public) EditMovie(c echo.Context) error {
+	log.Println("edit movie")
+
 	if value := c.Param("id"); value != "" {
 		intVar, err := strconv.Atoi(value)
 		if err != nil {
@@ -170,6 +182,8 @@ func (public Public) EditMovie(c echo.Context) error {
 }
 
 func (public Public) EditComment(c echo.Context) error {
+	log.Println("edit comment(Approval)")
+
 	if value := c.Param("id"); value != "" {
 		intVar, err := strconv.Atoi(value)
 		if err != nil {
@@ -191,6 +205,8 @@ func (public Public) EditComment(c echo.Context) error {
 }
 
 func (public Public) DelComment(c echo.Context) error {
+	log.Println("delete comment")
+
 	if value := c.Param("id"); value != "" {
 		intVar, err := strconv.Atoi(value)
 		if err != nil {
@@ -208,6 +224,8 @@ func (public Public) DelComment(c echo.Context) error {
 }
 
 func (public Public) DelMovie(c echo.Context) error {
+	log.Println("delete movie")
+
 	if value := c.Param("id"); value != "" {
 		intVar, err := strconv.Atoi(value)
 		if err != nil {

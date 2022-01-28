@@ -25,6 +25,7 @@ type Comment struct {
 	MovieId   int
 	CreatedAt string
 	Comment   string
+	Appr      bool
 }
 type User struct {
 	Id       int
@@ -54,7 +55,7 @@ func (db *DataBase) GetComments(id int) []Comment {
 	var comments []Comment
 	for res.Next() {
 		var comment Comment
-		err := res.Scan(&comment.Id, &comment.UserId, &comment.MovieId, &comment.Comment, &comment.CreatedAt)
+		err := res.Scan(&comment.Id, &comment.UserId, &comment.MovieId, &comment.Comment, &comment.Appr, &comment.CreatedAt)
 		if err != nil {
 			log.Fatal(err)
 		}

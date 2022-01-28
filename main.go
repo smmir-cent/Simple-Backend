@@ -12,13 +12,6 @@ func main() {
 	e := echo.New()
 	db := database.DataBase{}
 	db.Connect()
-	// movie := database.Movie{
-	// 	Id:          1,
-	// 	Name:        "succession",
-	// 	Description: "perfect",
-	// 	Rating:      4.2,
-	// }
-	// db.InsertMovie(movie)
 
 	public := handler.Public{DB: db}
 	// public
@@ -34,6 +27,7 @@ func main() {
 	e.PUT("/admin/comment/:id", public.EditComment)
 	e.DELETE("/admin/movie/:id", public.DelMovie)
 	e.DELETE("/admin/comment/:id", public.DelComment)
+
 	if err := e.Start("0.0.0.0:8080"); err != nil {
 		log.Fatal(err)
 	}

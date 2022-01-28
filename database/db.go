@@ -45,16 +45,6 @@ func (db *DataBase) Connect() {
 	// defer db.Connection.Close()
 }
 
-func (db *DataBase) InsertMovie(movie Movie) error {
-
-	sqlStatement := `INSERT INTO movie (id, name, description, rating) VALUES (?, ?, ?, ?)`
-	_, err := db.Connection.Exec(sqlStatement, movie.Id, movie.Name, movie.Description, movie.Rating)
-	if err != nil {
-		log.Println(err)
-	}
-	return err
-}
-
 func (db *DataBase) GetComments(id int) []Comment {
 
 	res, err := db.Connection.Query("SELECT * FROM comment WHERE movieId = ?", id)
@@ -114,6 +104,52 @@ func (db *DataBase) InsertVote(v Vote) error {
 func (db *DataBase) InsertComment(c Comment) error {
 	sqlStatement := "INSERT INTO comment (userId,  movieId, comment , createdAt) VALUES (?, ?, ? , ?)"
 	_, err := db.Connection.Exec(sqlStatement, c.UserId, c.MovieId, c.Comment, c.CreatedAt)
+	if err != nil {
+		log.Println(err)
+	}
+	return err
+}
+
+func (db *DataBase) InsertMovie(movie Movie) error {
+
+	sqlStatement := `INSERT INTO movie (name, description) VALUES (?, ?)`
+	_, err := db.Connection.Exec(sqlStatement, movie.Name, movie.Description)
+	if err != nil {
+		log.Println(err)
+	}
+	return err
+}
+
+func (db *DataBase) EditMovie(id int, name string, description string) error {
+	sqlStatement := "UPDATE movie SET name = ?, description= ? WHERE id = ?"
+	_, err := db.Connection.Exec(sqlStatement, name, description, id)
+	if err != nil {
+		log.Println(err)
+	}
+	return err
+}
+
+func (db *DataBase) EditComment(id int, approved bool) error {
+	sqlStatement := "UPDATE comment SET approved = ? WHERE id = ?"
+	_, err := db.Connection.Exec(sqlStatement, approved, id)
+	if err != nil {
+		log.Println(err)
+	}
+	return err
+}
+
+func (db *DataBase) DeleteMovie(id int) error {
+	sqlStatement := "DELETE FROM movie WHERE id=?"
+	_, err := db.Connection.Exec(sqlStatement, id)
+	if err != nil {
+		log.Println(err)
+	}
+	return err
+}
+
+func (db *DataBase) DeleteComment(id int) error {
+	sqlStatement := "DELETE FROM comment WHERE id=?"
+	_, err := db.Connection.Exec(sqlStatement, id)
 	if err != nil {
 		log.Println(err)
 	}

@@ -46,6 +46,14 @@ type MovieComment struct {
 	Comment_body string `json:"comment_body"`
 }
 
+type MovieInput struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+type Approval struct {
+	Approved bool `json:"approved"`
+}
+
 func (public Public) GetComment(c echo.Context) error {
 
 	if value := c.QueryParam("movie"); value != "" {
@@ -76,7 +84,7 @@ func (public Public) GetMovies(c echo.Context) error {
 }
 
 func (public Public) GetMovie(c echo.Context) error {
-	log.Println("GET MOVIE")
+	// log.Println("GET MOVIE")
 	if value := c.Param("id"); value != "" {
 		// log.Println(value)
 		intVar, err := strconv.Atoi(value)
@@ -124,5 +132,94 @@ func (public Public) CommentSubmit(c echo.Context) error {
 			return c.NoContent(http.StatusNoContent)
 		}
 	}
+}
 
+func (public Public) InsertMovie(c echo.Context) error {
+	var movieInput MovieInput
+	if err := c.Bind(&movieInput); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	} else {
+		err := public.DB.InsertMovie(database.Movie{Name: movieInput.Name, Description: movieInput.Description})
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		} else {
+			return c.NoContent(http.StatusNoContent)
+		}
+	}
+}
+
+func (public Public) EditMovie(c echo.Context) error {
+	if value := c.Param("id"); value != "" {
+		intVar, err := strconv.Atoi(value)
+		if err != nil {
+			log.Fatalf("can not cast id to int")
+		}
+		var movieInput MovieInput
+		if err := c.Bind(&movieInput); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		} else {
+			err := public.DB.EditMovie(intVar, movieInput.Name, movieInput.Description)
+			if err != nil {
+				return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+			} else {
+				return c.NoContent(http.StatusNoContent)
+			}
+		}
+	}
+	return echo.NewHTTPError(http.StatusBadRequest, "id?")
+}
+
+func (public Public) EditComment(c echo.Context) error {
+	if value := c.Param("id"); value != "" {
+		intVar, err := strconv.Atoi(value)
+		if err != nil {
+			log.Fatalf("can not cast id to int")
+		}
+		var appr Approval
+		if err := c.Bind(&appr); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		} else {
+			err := public.DB.EditComment(intVar, appr.Approved)
+			if err != nil {
+				return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+			} else {
+				return c.NoContent(http.StatusNoContent)
+			}
+		}
+	}
+	return echo.NewHTTPError(http.StatusBadRequest, "id?")
+}
+
+func (public Public) DelComment(c echo.Context) error {
+	if value := c.Param("id"); value != "" {
+		intVar, err := strconv.Atoi(value)
+		if err != nil {
+			log.Fatalf("can not cast id to int")
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+		err = public.DB.DeleteComment(intVar)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		} else {
+			return c.NoContent(http.StatusNoContent)
+		}
+	}
+	return echo.NewHTTPError(http.StatusBadRequest, "id?")
+}
+
+func (public Public) DelMovie(c echo.Context) error {
+	if value := c.Param("id"); value != "" {
+		intVar, err := strconv.Atoi(value)
+		if err != nil {
+			log.Fatalf("can not cast id to int")
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
+		err = public.DB.DeleteMovie(intVar)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		} else {
+			return c.NoContent(http.StatusNoContent)
+		}
+	}
+	return echo.NewHTTPError(http.StatusBadRequest, "id?")
 }

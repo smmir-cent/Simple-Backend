@@ -61,6 +61,7 @@ func (public Public) GetComment(c echo.Context) error {
 		intVar, err := strconv.Atoi(value)
 		if err != nil {
 			log.Fatalf("can not cast id to int")
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 		comments := public.DB.GetComments(intVar)
 
@@ -94,6 +95,8 @@ func (public Public) GetMovie(c echo.Context) error {
 		intVar, err := strconv.Atoi(value)
 		if err != nil {
 			log.Fatalf("can not cast id to int")
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+
 		}
 		movie := public.DB.GetMovie(intVar)
 		if movie.Id != 0 {
@@ -165,6 +168,8 @@ func (public Public) EditMovie(c echo.Context) error {
 		intVar, err := strconv.Atoi(value)
 		if err != nil {
 			log.Fatalf("can not cast id to int")
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+
 		}
 		var movieInput MovieInput
 		if err := c.Bind(&movieInput); err != nil {
@@ -188,6 +193,8 @@ func (public Public) EditComment(c echo.Context) error {
 		intVar, err := strconv.Atoi(value)
 		if err != nil {
 			log.Fatalf("can not cast id to int")
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+
 		}
 		var appr Approval
 		if err := c.Bind(&appr); err != nil {
